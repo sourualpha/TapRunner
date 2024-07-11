@@ -14,6 +14,7 @@ public class WallManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //•Ç‚ÌˆÚ“®ˆ—
         this.transform.position += new Vector3(WallSpeed * Time.deltaTime, 0, 0);
     }
 }

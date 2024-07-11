@@ -10,23 +10,47 @@ public class Title : MonoBehaviour
 
     [SerializeField]
     private float fadeTime;  //フェード時間（秒）
-    // Start is called before the first frame update
+
+    [SerializeField]
+    private GameObject optionpanel; //オプションパネル
+
+    private bool isOption = false; //オプションパネルを開いているかどうかのフラグ
+
     void Start()
     {
         fade.FadeOut(fadeTime);        
+        optionpanel.SetActive(false);
     }
 
-    // Update is called once per frame
     void Update()
     {
-
+        if(Input.GetKeyUp(KeyCode.Escape))
+        {
+            if (!isOption)
+            {
+                optionpanel.SetActive(true);
+                isOption = true;
+            }
+            else
+            {
+                optionpanel.SetActive(false);
+                isOption=false;
+            }
+        }
     }
 
+    //フェードインが終わった際にシーン遷移をする
     public void StartButton()
     {
         fade.FadeIn(fadeTime, () =>
         {
             SceneManager.LoadScene("GameScene");
         });
+    }
+
+    //ゲーム終了処理
+    public void ExitButton()
+    {
+        Application.Quit();
     }
 }

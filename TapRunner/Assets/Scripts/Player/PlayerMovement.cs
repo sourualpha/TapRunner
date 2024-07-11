@@ -1,56 +1,65 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Common;
 
 public class PlayerMovement : MonoBehaviour
 {
-
     #region SerializeField
     [SerializeField]
-    GameObject PlayerTurbo; //後ろのアニメーション
+    GameObject PlayerTurbo; // プレイヤーの後ろに表示するアニメーション
 
     [SerializeField]
-    GameObject SavePanel; //保存のパネル
+    GameObject SavePanel; // 保存のパネル
     #endregion
-    public float speed;
-    public float gravity;
-    float playerRotate;
-    Rigidbody2D rb;
-    Animator animator;
-    // Start is called before the first frame update
+
+    public float speed; // プレイヤーの速度
+    public float gravity; // 重力
+    float playerRotate; // プレイヤーの回転角度
+    Rigidbody2D rb; // Rigidbody2D コンポーネント
+    Animator animator; // アニメーター
+
+    // 初期化処理
     void Start()
     {
-        rb= GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        playerRotate = 45;
-        SavePanel.SetActive(false);
+        playerRotate = Common.GrovalConst.PLAYER_ROTATE_INITIAL;
+        SavePanel.SetActive(false); // 保存パネルを非表示
     }
 
-    // Update is called once per frame
     void Update()
     {
-
         Vector2 force = new Vector2(speed * Time.deltaTime, 0);
-        this.rb.AddForce(force);
-        this.transform.position += new Vector3(0, gravity * Time.deltaTime, 0);
-        this.transform.rotation = Quaternion.Euler(0, 0, playerRotate);
+        rb.AddForce(force);
 
+        // プレイヤーの位置を更新する
+        transform.position += new Vector3(0, gravity * Time.deltaTime, 0);
+
+        // プレイヤーの回転を更新する
+        transform.rotation = Quaternion.Euler(0, 0, playerRotate);
     }
 
+    // プレイヤーがタップされたときの処理
     public void Tap()
     {
-        gravity *= -1.0f;
-        playerRotate*= -1.0f;
+        gravity *= Common.GrovalConst.INVERSION; // 重力の方向を反転する
+        playerRotate *= Common.GrovalConst.INVERSION; // 回転角度を反転する
     }
 
+    // 衝突時の処理
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.CompareTag("Wall"))
+        if (collision.gameObject.CompareTag("Wall"))
         {
+            // プレイヤーのターボを破壊する
             Destroy(PlayerTurbo);
+
+            // 爆発アニメーションを再生する
             animator.Play("Explosions");
+
+            // 保存パネルを表示する
             SavePanel.SetActive(true);
         }
     }
-
 }
